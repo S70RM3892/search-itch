@@ -1,8 +1,11 @@
 name: Release APK
 
+# versionName を上げて push すると、その版の Release（タグ v<versionName>）を自動作成する。
+# 既に同じ版の Release があれば何もしない。
 on:
   push:
-    tags: ["v*"]
+    branches: ["**"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,23 +16,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Read version
+        id: ver
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=$(sed -n 's/.*versionName *= *"\(.*\)".*/\1/p' app/build.gradle.kts)
+          echo "tag=v$v" >> "$GITHUB_OUTPUT"
+          if gh release view "v$v" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/setup-java@v4
+        if: steps.ver.outputs.exists == 'false'
         with:
           distribution: temurin
           java-version: "17"
 
       - uses: android-actions/setup-android@v3
+        if: steps.ver.outputs.exists == 'false'
 
       - name: Build debug APK
+        if: steps.ver.outputs.exists == 'false'
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/app-debug.apk "QuickLookup-${GITHUB_REF_NAME}.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "QuickLookup-${{ steps.ver.outputs.tag }}.apk"
 
       - name: Create GitHub Release
+        if: steps.ver.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.ver.outputs.tag }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "QuickLookup-${GITHUB_REF_NAME}.apk" \
-            --title "サッと調べる ${GITHUB_REF_NAME}" \
+          gh release create "$TAG" "QuickLookup-$TAG.apk" \
+            --target "$GITHUB_SHA" \
+            --title "サッと調べる $TAG" \
             --notes "APK をダウンロードしてインストール（提供元不明のアプリの許可が必要）。Android 6.0 以上。"

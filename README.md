@@ -12,7 +12,7 @@ Androidで文字を選択 →「調べる」で、小さいウィンドウに辞
 
 [Releases](https://github.com/S70RM3892/search-itch/releases/latest) から `QuickLookup-vX.Y.apk` をダウンロードしてインストール。
 
-新しいバージョンを出すとき：`app/build.gradle.kts` の `versionCode`/`versionName` を上げて `git tag vX.Y && git push origin vX.Y` → Actions が APK をビルドして Release に添付する。
+新しいバージョンを出すとき：`app/build.gradle.kts` の `versionCode`/`versionName` を上げて push → Actions がその版の APK をビルドして Release（タグ `v<versionName>`）に添付する。同じ版が既にあれば何もしない。
 
 ## ビルド方法
 
