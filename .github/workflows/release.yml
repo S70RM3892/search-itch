@@ -35,9 +35,6 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: android-actions/setup-android@v3
-        if: steps.ver.outputs.exists == 'false'
-
       - name: Build debug APK
         if: steps.ver.outputs.exists == 'false'
         run: |
