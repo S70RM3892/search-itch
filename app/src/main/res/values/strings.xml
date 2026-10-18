@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">サッと調べる</string>
+    <string name="menu_label">調べる</string>
+    <string name="usage">使い方\n\n1. どのアプリでも文字を長押しして選択\n2. メニューの「⋮」→「調べる」をタップ\n3. 小さいウィンドウで辞書が開く（外側タップで閉じる）\n\n上のタブで 国語辞典／英和／Google／Wikipedia を切り替え。\n英字だけなら英和、それ以外は国語辞典で自動的に開く。\n\n選択メニューに出ないアプリでは「共有」→「調べる」でも使える。\n\n↓ ここで文字を選択して試せる</string>
+    <string name="sample">photosynthesis　浸透圧　アボガドロ定数　ubiquitous</string>
+</resources>
